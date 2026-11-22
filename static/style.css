@@ -1,0 +1,137 @@
+/* 里程归仓工具样式。调色板参数来自 dataviz 参考实例（浅色选定，深色经媒体查询选定）。 */
+:root {
+  --surface-1: #fcfcfb;
+  --page: #f9f9f7;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --muted: #898781;
+  --gridline: #e1e0d9;
+  --baseline: #c3c2b7;
+  --border: rgba(11,11,11,0.10);
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #6250d6;
+  --series-8: #e34948;
+  --st-good: #0ca30c;
+  --st-warning: #fab219;
+  --st-critical: #d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-1: #1a1a19;
+    --page: #0d0d0d;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --gridline: #2c2c2a;
+    --baseline: #383835;
+    --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--page);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+header {
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px 0;
+}
+h1 { font-size: 18px; margin: 0 0 6px; }
+h2 { font-size: 15px; margin: 0 0 10px; }
+h3 { font-size: 13px; margin: 14px 0 6px; color: var(--text-secondary); }
+.route-bar { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+nav { display: flex; gap: 2px; }
+.tab {
+  border: 1px solid transparent; border-bottom: none;
+  background: none; color: var(--text-secondary);
+  padding: 7px 14px; cursor: pointer; font-size: 14px;
+  border-radius: 6px 6px 0 0;
+}
+.tab.active {
+  background: var(--page); color: var(--text-primary);
+  border-color: var(--border); font-weight: 600;
+}
+main { padding: 16px 20px; }
+.tabpane { display: none; }
+.tabpane.active { display: block; }
+.cols { display: flex; gap: 16px; align-items: flex-start; }
+.panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.panel.grow { flex: 1; min-width: 0; }
+aside.panel { width: 320px; flex-shrink: 0; }
+.muted { color: var(--muted); }
+.row { display: flex; gap: 12px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+.form label { display: block; margin: 6px 0; }
+input, select, textarea, button {
+  font: inherit; color: var(--text-primary);
+  background: var(--surface-1);
+  border: 1px solid var(--baseline);
+  border-radius: 5px; padding: 4px 8px;
+}
+textarea { width: 100%; font-family: ui-monospace, monospace; }
+button { cursor: pointer; }
+button:hover { border-color: var(--series-1); }
+button.primary { background: var(--series-1); color: #fff; border-color: var(--series-1); }
+button.danger { color: var(--st-critical); }
+
+.tbl { border-collapse: collapse; width: 100%; margin: 6px 0; }
+.tbl th, .tbl td {
+  border-bottom: 1px solid var(--gridline);
+  padding: 5px 8px; text-align: left; vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+.tbl th { color: var(--text-secondary); font-weight: 600; font-size: 12px; }
+.tbl tr.clickable { cursor: pointer; }
+.tbl tr.clickable:hover { background: var(--page); }
+.tbl tr.selected { background: color-mix(in srgb, var(--series-1) 10%, var(--surface-1)); }
+.tbl input { width: 90px; }
+.tbl input.lbl { width: 130px; }
+
+.dot {
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  margin-right: 4px; vertical-align: -1px;
+}
+.st-located { background: var(--st-good); }
+.st-ambiguous { background: var(--st-warning); }
+.st-exception { background: var(--st-critical); }
+.badge {
+  display: inline-block; padding: 1px 8px; border-radius: 10px;
+  font-size: 12px; border: 1px solid var(--border);
+}
+.badge.located { color: var(--st-good); }
+.badge.ambiguous { color: var(--text-primary); background: var(--st-warning); }
+.badge.exception { color: #fff; background: var(--st-critical); }
+.badge.draft { color: var(--series-2); }
+.badge.published { color: var(--st-good); }
+.badge.retracted { color: var(--muted); text-decoration: line-through; }
+
+.legend { display: inline-flex; gap: 14px; color: var(--text-secondary); font-size: 12px; }
+svg text { font-family: inherit; }
+#toast {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  background: var(--text-primary); color: var(--page);
+  padding: 8px 18px; border-radius: 6px; opacity: 0; transition: opacity .2s;
+  pointer-events: none; max-width: 80%;
+}
+#toast.show { opacity: .95; }
+.preview-changed { color: var(--series-2); font-weight: 600; }

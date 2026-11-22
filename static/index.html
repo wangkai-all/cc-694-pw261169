@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>公路观测里程归仓工具</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>公路观测里程归仓工具</h1>
+  <div class="route-bar">
+    <label>路线 <select id="routeSelect"></select></label>
+    <span id="routeHint" class="muted"></span>
+  </div>
+  <nav>
+    <button class="tab active" data-tab="versions">版本与断链</button>
+    <button class="tab" data-tab="import">数据导入</button>
+    <button class="tab" data-tab="records">记录与歧义</button>
+    <button class="tab" data-tab="reverse">反查</button>
+    <button class="tab" data-tab="facts">公里事实</button>
+  </nav>
+</header>
+
+<main>
+  <!-- 版本与断链 -->
+  <section id="tab-versions" class="tabpane active">
+    <div class="cols">
+      <aside class="panel">
+        <h2>路线版本</h2>
+        <table id="versionTable" class="tbl"></table>
+        <h3>新建版本（历史订正 / 改建）</h3>
+        <div class="form">
+          <label>生效日期 <input type="date" id="newVerDate"></label>
+          <label>说明 <input type="text" id="newVerNote" placeholder="如：K10 处改建短链"></label>
+          <label>区段来源 <select id="newVerCopy"></select></label>
+          <button id="btnCreateVersion">新建草稿</button>
+        </div>
+      </aside>
+      <div class="panel grow">
+        <div id="versionDetail"><p class="muted">选择左侧版本查看断链示意与区段映射。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数据导入 -->
+  <section id="tab-import" class="tabpane">
+    <div class="panel">
+      <h2>导入巡检数据</h2>
+      <p class="muted">CSV 列：路线,方向,里程牌读数,发生日期[,区段标记]。首行可为表头。区段标记用于消除长链重号歧义。</p>
+      <textarea id="csvInput" rows="8" spellcheck="false"
+        placeholder="G108,上行,12.6,2026-06-15&#10;G108,下行,14,2026-06-16,长链重复段"></textarea>
+      <div class="row">
+        <button id="btnImport">校验并导入</button>
+        <span id="importSummary"></span>
+      </div>
+      <div id="importResult"></div>
+    </div>
+  </section>
+
+  <!-- 记录与歧义 -->
+  <section id="tab-records" class="tabpane">
+    <div class="panel">
+      <h2>观测记录</h2>
+      <div class="row filters">
+        <label>状态
+          <select id="recStatusFilter">
+            <option value="">全部</option>
+            <option value="located">已入仓</option>
+            <option value="ambiguous">待消歧</option>
+            <option value="exception">异常</option>
+          </select>
+        </label>
+        <button id="btnReloadRecords">刷新</button>
+        <span class="legend">
+          <span><i class="dot st-located"></i>已入仓</span>
+          <span><i class="dot st-ambiguous"></i>待消歧</span>
+          <span><i class="dot st-exception"></i>异常</span>
+        </span>
+      </div>
+      <div id="recordsWrap"></div>
+    </div>
+  </section>
+
+  <!-- 反查 -->
+  <section id="tab-reverse" class="tabpane">
+    <div class="panel">
+      <h2>连续位置反查原里程</h2>
+      <div class="row">
+        <label>版本 <select id="revVersion"></select></label>
+        <label>连续位置 (km) <input type="number" id="revChain" step="0.001" min="0" value="10"></label>
+        <button id="btnReverse">反查</button>
+      </div>
+      <div id="reverseResult"></div>
+    </div>
+  </section>
+
+  <!-- 公里事实 -->
+  <section id="tab-facts" class="tabpane">
+    <div class="panel">
+      <h2>下游公里区间事实</h2>
+      <div class="row">
+        <label><input type="checkbox" id="factShowRetracted" checked> 显示已撤回</label>
+        <button id="btnReloadFacts">刷新</button>
+      </div>
+      <h3>当前有效区间汇总</h3>
+      <div id="factBins"></div>
+      <h3>事实台账（含撤回与重建）</h3>
+      <div id="factLedger"></div>
+    </div>
+  </section>
+</main>
+
+<div id="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
